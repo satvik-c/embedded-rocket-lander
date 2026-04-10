@@ -1,0 +1,17 @@
+[
+   {
+      "directory" : "C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug",
+      "command"   : "clang++ -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021\" -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug\" -I\"C:/ti/mspm0_sdk_2_09_00_01/source/third_party/CMSIS/Core/Include\" -I\"C:/ti/mspm0_sdk_2_09_00_01/source\" -D__MSPM0G3507__ -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/c++/v1\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/clang/18/include\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/c\" -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug/syscfg\"",
+      "file"      : "C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Exam2ASMPart.s"
+   },
+   {
+      "directory" : "C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug",
+      "command"   : "clang++ -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021\" -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug\" -I\"C:/ti/mspm0_sdk_2_09_00_01/source/third_party/CMSIS/Core/Include\" -I\"C:/ti/mspm0_sdk_2_09_00_01/source\" -D__MSPM0G3507__ -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/c++/v1\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/clang/18/include\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/c\" -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug/syscfg\" -xc",
+      "file"      : "C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Exam2CPart.c"
+   },
+   {
+      "directory" : "C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug",
+      "command"   : "clang++ -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021\" -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug\" -I\"C:/ti/mspm0_sdk_2_09_00_01/source/third_party/CMSIS/Core/Include\" -I\"C:/ti/mspm0_sdk_2_09_00_01/source\" -D__MSPM0G3507__ -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/c++/v1\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/lib/clang/18/include\" -isystem\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include/c\" -I\"C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/Debug/syscfg\" -xc",
+      "file"      : "C:/Users/satvi/Downloads/MSPM0_ValvanoWare/Exam2_MSPM0_StudentVersions/Spring2021/ticlang/startup_mspm0g3507_ticlang.c"
+   }
+]

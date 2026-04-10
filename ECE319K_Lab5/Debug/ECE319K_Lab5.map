@@ -1,0 +1,609 @@
+******************************************************************************
+            TI ARM Clang Linker PC v4.0.4                      
+******************************************************************************
+>> Linked Wed Mar  4 12:34:45 2026
+
+OUTPUT FILE NAME:   <ECE319K_Lab5.out>
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 0000f0ad
+
+
+MEMORY CONFIGURATION
+
+         name            origin    length      used     unused   attr    fill
+----------------------  --------  ---------  --------  --------  ----  --------
+  FLASH                 00000000   00020000  0000f370  00010c90  R  X
+  SRAM                  20200000   00008000  00000500  00007b00  RW X
+  BCR_CONFIG            41c00000   00000080  00000000  00000080  R   
+  BSL_CONFIG            41c00100   00000080  00000000  00000080  R   
+
+
+SEGMENT ALLOCATION MAP
+
+run origin  load origin   length   init length attrs members
+----------  ----------- ---------- ----------- ----- -------
+00000000    00000000    0000f370   0000f370    r-x
+  00000000    00000000    000000c0   000000c0    r-- .intvecs
+  000000c0    000000c0    0000da40   0000da40    r-- .rodata
+  0000db00    0000db00    00001820   00001820    r-x .text
+  0000f320    0000f320    00000050   00000050    r-- .cinit
+20200000    20200000    00000300   00000000    rw-
+  20200000    20200000    00000200   00000000    rw- .sysmem
+  20200200    20200200    000000c8   00000000    rw- .bss
+  202002c8    202002c8    00000038   00000000    rw- .data
+20207e00    20207e00    00000200   00000000    rw-
+  20207e00    20207e00    00000200   00000000    rw- .stack
+
+
+SECTION ALLOCATION MAP
+
+ output                                  attributes/
+section   page    origin      length       input sections
+--------  ----  ----------  ----------   ----------------
+.intvecs   0    00000000    000000c0     
+                  00000000    000000c0     startup_mspm0g3507_ticlang.o (.intvecs)
+
+.text      0    0000db00    00001820     
+                  0000db00    000002c4     ECE319K_Lab5Grader.o (.text.FFT)
+                  0000ddc4    0000024c     ECE319K_Lab5Grader.o (.text.lab5grader)
+                  0000e010    000001d4     ECE319K_Lab5Grader.o (.text.Lab5Grader)
+                  0000e1e4    000001b4     Clock.o (.text.Clock_Init80MHz)
+                  0000e398    0000015c     ECE319K_Lab5main.o (.text.main)
+                  0000e4f4    00000158     ECE319K_Lab5Grader.o (.text.CheckInitialization)
+                  0000e64c    00000134     ECE319K_Lab5Grader.o (.text.ADC_Init)
+                  0000e780    00000130     UARTints.o (.text.UART_Init)
+                  0000e8b0    000000a8     Timer.o (.text.TimerG7_IntArm)
+                  0000e958    00000008     libclang_rt.builtins.a : aeabi_memcpy.S.obj (.text.__aeabi_memcpy)
+                  0000e960    00000088     libc.a : strcmp-armv6m.S.obj (.text:strcmp)
+                  0000e9e8    0000007c     LaunchPad.o (.text.LaunchPad_Init)
+                  0000ea64    0000007c     libc.a : copy_decompress_lzss.c.obj (.text:decompress:lzss)
+                  0000eae0    00000060     Timer.o (.text.TimerG12_Init)
+                  0000eb40    0000005c     UARTints.o (.text.UART0_IRQHandler)
+                  0000eb9c    00000058     UARTints.o (.text.copyHardwareToSoftware)
+                  0000ebf4    00000056     libclang_rt.builtins.a : aeabi_idivmod.S.obj (.text.__aeabi_idivmod)
+                  0000ec4a    00000002                            : aeabi_div0.c.obj (.text.__aeabi_idiv0)
+                  0000ec4c    0000004c     FIFO.o (.text.RxFifo_Put)
+                  0000ec98    0000004c     ECE319K_Lab5main.o (.text.Sound_Init)
+                  0000ece4    0000004c     FIFO.o (.text.TxFifo_Get)
+                  0000ed30    0000004c     FIFO.o (.text.TxFifo_Put)
+                  0000ed7c    0000004c     UARTints.o (.text.copySoftwareToHardware)
+                  0000edc8    00000044     ECE319K_Lab5main.o (.text.useSound)
+                  0000ee0c    00000040     UARTints.o (.text.UART_OutChar)
+                  0000ee4c    00000040     libclang_rt.builtins.a : aeabi_uidivmod.S.obj (.text.__aeabi_uidivmod)
+                  0000ee8c    0000003c     DAC5.o (.text.DAC5_Init)
+                  0000eec8    0000003c     libc.a : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit)
+                  0000ef04    00000038     LaunchPad.o (.text.ActivatePortA_B)
+                  0000ef3c    00000038     ECE319K_Lab5main.o (.text.SysTick_Handler)
+                  0000ef74    00000036     UART.o (.text.UART_OutUDec)
+                  0000efaa    00000034     ECE319K_Lab5Grader.o (.text.setUpper)
+                  0000efde    00000002     --HOLE-- [fill = 0]
+                  0000efe0    0000002c     ECE319K_Lab5Grader.o (.text.ReadInput)
+                  0000f00c    00000028     ECE319K_Lab5Grader.o (.text.ADC_Start)
+                  0000f034    00000028     ECE319K_Lab5Grader.o (.text.Grader_Init)
+                  0000f05c    00000028     Key.o (.text.Key_Init)
+                  0000f084    00000028     ECE319K_Lab5Grader.o (.text.LogicAnalyzer)
+                  0000f0ac    00000028     libc.a : boot_cortex_m.c.obj (.text:_c_int00_noargs)
+                  0000f0d4    00000026     UART.o (.text.UART_OutString)
+                  0000f0fa    00000002     --HOLE-- [fill = 0]
+                  0000f0fc    00000024     Key.o (.text.Key_In)
+                  0000f120    00000024     ECE319K_Lab5Grader.o (.text.TIMG7_IRQHandler)
+                  0000f144    00000024     ECE319K_Lab5main.o (.text.useSine)
+                  0000f168    00000020     ECE319K_Lab5Grader.o (.text.Random32)
+                  0000f188    00000020     ECE319K_Lab5main.o (.text.Sound_Start)
+                  0000f1a8    0000001c     DAC5.o (.text.DAC5_Out)
+                  0000f1c4    0000001c     startup_mspm0g3507_ticlang.o (.text.Default_Handler)
+                  0000f1e0    0000001c     startup_mspm0g3507_ticlang.o (.text.HardFault_Handler)
+                  0000f1fc    00000018     FIFO.o (.text.RxFifo_Size)
+                  0000f214    00000018     ECE319K_Lab5Grader.o (.text.Scope)
+                  0000f22c    00000018     FIFO.o (.text.TxFifo_Size)
+                  0000f244    00000016     libc.a : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init_nomemset)
+                  0000f25a    00000002     --HOLE-- [fill = 0]
+                  0000f25c    00000014     Dump.o (.text.Debug_Init)
+                  0000f270    00000014     FIFO.o (.text.RxFifo_Init)
+                  0000f284    00000014     FIFO.o (.text.TxFifo_Init)
+                  0000f298    00000012     libc.a : memcpy16.S.obj (.text:TI_memcpy_small)
+                  0000f2aa    00000012            : copy_decompress_none.c.obj (.text:decompress:none)
+                  0000f2bc    00000010     Clock.o (.text.Clock_Delay)
+                  0000f2cc    00000010     LaunchPad.o (.text.Delay)
+                  0000f2dc    00000010     ECE319K_Lab5Grader.o (.text.OutCRLF)
+                  0000f2ec    0000000c     Clock.o (.text.Clock_Freq)
+                  0000f2f8    0000000c     ECE319K_Lab5main.o (.text.Sound_Stop)
+                  0000f304    00000006     libc.a : exit.c.obj (.text:abort)
+                  0000f30a    00000004     libsysbm.a : hostexit.c.obj (.text.HOSTexit)
+                  0000f30e    00000004     startup_mspm0g3507_ticlang.o (.text.Reset_Handler)
+                  0000f312    00000004     libc.a : pre_init.c.obj (.text._system_pre_init)
+                  0000f316    0000000a     --HOLE-- [fill = 0]
+
+.cinit     0    0000f320    00000050     
+                  0000f320    00000026     (.cinit..data.load) [load image, compression = lzss]
+                  0000f346    00000002     --HOLE-- [fill = 0]
+                  0000f348    0000000c     (__TI_handler_table)
+                  0000f354    00000008     (.cinit..bss.load) [load image, compression = zero_init]
+                  0000f35c    00000010     (__TI_cinit_table)
+                  0000f36c    00000004     --HOLE-- [fill = 0]
+
+.rodata    0    000000c0    0000da40     
+                  000000c0    000064cd     ECE319K_Lab5main.o (.rodata.ufo_lowpitch)
+                  0000658d    0000425b     ECE319K_Lab5main.o (.rodata.iceball)
+                  0000a7e8    00001d92     ECE319K_Lab5main.o (.rodata.slimeball)
+                  0000c57a    00000ff0     ECE319K_Lab5main.o (.rodata.shoot)
+                  0000d56a    00000280     ECE319K_Lab5Grader.o (.rodata.NotesProblem)
+                  0000d7ea    00000002     --HOLE-- [fill = 0]
+                  0000d7ec    00000080     ECE319K_Lab5Grader.o (.rodata.NotesPeriod)
+                  0000d86c    0000004b     ECE319K_Lab5Grader.o (.rodata.str1.2831041533924961092.1)
+                  0000d8b7    0000003a     ECE319K_Lab5Grader.o (.rodata.str1.3753167930287493833.1)
+                  0000d8f1    00000038     ECE319K_Lab5Grader.o (.rodata.str1.13188357218563198926.1)
+                  0000d929    00000032     ECE319K_Lab5Grader.o (.rodata.str1.14125597502108314896.1)
+                  0000d95b    0000002f     ECE319K_Lab5Grader.o (.rodata.str1.11916983087567108417.1)
+                  0000d98a    0000002e     ECE319K_Lab5Grader.o (.rodata.str1.9157344974060636180.1)
+                  0000d9b8    00000020     ECE319K_Lab5Grader.o (.rodata.IMULTIPLIERS)
+                  0000d9d8    00000020     ECE319K_Lab5Grader.o (.rodata.RMULTIPLIERS)
+                  0000d9f8    00000020     ECE319K_Lab5main.o (.rodata.SineWave)
+                  0000da18    0000001c     ECE319K_Lab5Grader.o (.rodata.str1.11809642467900141317.1)
+                  0000da34    00000015     ECE319K_Lab5Grader.o (.rodata.str1.3525422095670658102.1)
+                  0000da49    00000014     ECE319K_Lab5Grader.o (.rodata.str1.4481438830803098069.1)
+                  0000da5d    00000014     ECE319K_Lab5Grader.o (.rodata.str1.5560219960635954075.1)
+                  0000da71    00000013     ECE319K_Lab5Grader.o (.rodata.str1.11270995160232060492.1)
+                  0000da84    00000011     ECE319K_Lab5Grader.o (.rodata.str1.6142149970032930034.1)
+                  0000da95    00000003     --HOLE-- [fill = 0]
+                  0000da98    00000010     ECE319K_Lab5main.o (.rodata.soundLengths)
+                  0000daa8    00000010     ECE319K_Lab5Grader.o (.rodata.str1.14245708735948419566.1)
+                  0000dab8    00000010     ECE319K_Lab5Grader.o (.rodata.str1.15764156664788727584.1)
+                  0000dac8    0000000f     ECE319K_Lab5Grader.o (.rodata.str1.9964861412651002306.1)
+                  0000dad7    0000000e     ECE319K_Lab5Grader.o (.rodata.str1.12550021390912809959.1)
+                  0000dae5    0000000d     ECE319K_Lab5Grader.o (.rodata.str1.1830190667680462960.1)
+                  0000daf2    00000007     ECE319K_Lab5main.o (.rodata.EID1)
+                  0000daf9    00000007     ECE319K_Lab5Grader.o (.rodata.str1.2010255871548557574.1)
+
+.init_array 
+*          0    00000000    00000000     UNINITIALIZED
+
+.binit     0    00000000    00000000     
+
+.sysmem    0    20200000    00000200     UNINITIALIZED
+                  20200000    00000010     libc.a : memory.c.obj (.sysmem)
+                  20200010    000001f0     --HOLE--
+
+.bss       0    20200200    000000c8     UNINITIALIZED
+                  20200200    00000040     FIFO.o (.bss.TxFifo)
+                  20200240    00000040     (.common:Last16ADCresults)
+                  20200280    00000010     FIFO.o (.bss.RxFifo)
+                  20200290    00000004     (.common:DebugCnt)
+                  20200294    00000004     (.common:LastIn)
+                  20200298    00000004     (.common:M)
+                  2020029c    00000004     (.common:Mask)
+                  202002a0    00000004     (.common:PeriodicTask2)
+                  202002a4    00000004     (.common:RxGetI)
+                  202002a8    00000004     (.common:RxPutI)
+                  202002ac    00000004     (.common:SampleFlag)
+                  202002b0    00000004     (.common:State)
+                  202002b4    00000004     (.common:TExaSadc)
+                  202002b8    00000004     (.common:TxGetI)
+                  202002bc    00000004     (.common:TxPutI)
+                  202002c0    00000004     (.common:key)
+                  202002c4    00000004     (.common:last)
+
+.data      0    202002c8    00000038     UNINITIALIZED
+                  202002c8    00000010     ECE319K_Lab5main.o (.data.soundsArray)
+                  202002d8    00000004     Clock.o (.data.BusFreq)
+                  202002dc    00000004     ECE319K_Lab5Grader.o (.data.Fail)
+                  202002e0    00000004     ECE319K_Lab5main.o (.data.Index)
+                  202002e4    00000004     ECE319K_Lab5Grader.o (.data.Last16ADCindex)
+                  202002e8    00000004     ECE319K_Lab5Grader.o (.data.NotesMode)
+                  202002ec    00000004     ECE319K_Lab5Grader.o (.data.Score)
+                  202002f0    00000004     ECE319K_Lab5Grader.o (.data.Time)
+                  202002f4    00000004     ECE319K_Lab5main.o (.data.WaveLen)
+                  202002f8    00000004     ECE319K_Lab5main.o (.data.WavePtr)
+                  202002fc    00000004     ECE319K_Lab5main.o (.data.soundsIndex)
+
+.stack     0    20207e00    00000200     UNINITIALIZED
+                  20207e00    00000004     libc.a : boot_cortex_m.c.obj (.stack)
+                  20207e04    000001fc     --HOLE--
+
+__llvm_prf_cnts 
+*          0    20200000    00000000     UNINITIALIZED
+
+__llvm_prf_bits 
+*          0    20200000    00000000     UNINITIALIZED
+
+MODULE SUMMARY
+
+       Module                         code   ro data   rw data
+       ------                         ----   -------   -------
+    .\
+       ECE319K_Lab5main.o             628    54497     40     
+       ECE319K_Lab5Grader.o           2740   1370      112    
+       UARTints.o                     624    0         0      
+       Clock.o                        464    0         4      
+       FIFO.o                         316    0         96     
+       Timer.o                        264    0         0      
+       LaunchPad.o                    196    0         0      
+       UART.o                         92     0         0      
+       DAC5.o                         88     0         0      
+       Key.o                          76     0         0      
+       Dump.o                         20     0         4      
+    +--+------------------------------+------+---------+---------+
+       Total:                         5508   55867     256    
+                                                              
+    .\ticlang\
+       startup_mspm0g3507_ticlang.o   60     192       0      
+    +--+------------------------------+------+---------+---------+
+       Total:                         60     192       0      
+                                                              
+    C:\ti\ccs2040\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libc.a
+       strcmp-armv6m.S.obj            136    0         0      
+       copy_decompress_lzss.c.obj     124    0         0      
+       autoinit.c.obj                 60     0         0      
+       boot_cortex_m.c.obj            40     0         0      
+       copy_zero_init.c.obj           22     0         0      
+       copy_decompress_none.c.obj     18     0         0      
+       memcpy16.S.obj                 18     0         0      
+       exit.c.obj                     6      0         0      
+       pre_init.c.obj                 4      0         0      
+    +--+------------------------------+------+---------+---------+
+       Total:                         428    0         0      
+                                                              
+    C:\ti\ccs2040\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/c/libsysbm.a
+       hostexit.c.obj                 4      0         0      
+    +--+------------------------------+------+---------+---------+
+       Total:                         4      0         0      
+                                                              
+    C:\ti\ccs2040\ccs\tools\compiler\ti-cgt-armllvm_4.0.4.LTS\lib\armv6m-ti-none-eabi/libclang_rt.builtins.a
+       aeabi_idivmod.S.obj            86     0         0      
+       aeabi_uidivmod.S.obj           64     0         0      
+       aeabi_memcpy.S.obj             8      0         0      
+       aeabi_div0.c.obj               2      0         0      
+    +--+------------------------------+------+---------+---------+
+       Total:                         160    0         0      
+                                                              
+       Heap:                          0      0         512    
+       Stack:                         0      0         512    
+       Linker Generated:              0      74        0      
+    +--+------------------------------+------+---------+---------+
+       Grand Total:                   6160   56133     1280   
+
+
+LINKER GENERATED COPY TABLES
+
+__TI_cinit_table @ 0000f35c records: 2, size/record: 8, table size: 16
+	.data: load addr=0000f320, load size=00000026 bytes, run addr=202002c8, run size=00000038 bytes, compression=lzss
+	.bss: load addr=0000f354, load size=00000008 bytes, run addr=20200200, run size=000000c8 bytes, compression=zero_init
+
+
+LINKER GENERATED HANDLER TABLE
+
+__TI_handler_table @ 0000f348 records: 3, size/record: 4, table size: 12
+	index: 0, handler: __TI_decompress_lzss
+	index: 1, handler: __TI_decompress_none
+	index: 2, handler: __TI_zero_init
+
+
+GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
+
+address   name                          
+-------   ----                          
+0000f1c5  ADC0_IRQHandler               
+0000f1c5  ADC1_IRQHandler               
+0000e64d  ADC_Init                      
+0000f00d  ADC_Start                     
+0000f1c5  AES_IRQHandler                
+0000ef05  ActivatePortA_B               
+202002d8  BusFreq                       
+0000f30a  C$$EXIT                       
+0000f1c5  CANFD0_IRQHandler             
+0000e4f5  CheckInitialization           
+0000f2bd  Clock_Delay                   
+0000f2ed  Clock_Freq                    
+0000e1e5  Clock_Init80MHz               
+0000f1c5  DAC0_IRQHandler               
+0000ee8d  DAC5_Init                     
+0000f1a9  DAC5_Out                      
+0000f1c5  DMA_IRQHandler                
+20200290  DebugCnt                      
+0000f25d  Debug_Init                    
+0000f1c5  Default_Handler               
+0000f2cd  Delay                         
+0000daf2  EID1                          
+0000db01  FFT                           
+0000f1c5  GROUP0_IRQHandler             
+0000f1c5  GROUP1_IRQHandler             
+0000f035  Grader_Init                   
+0000f30b  HOSTexit                      
+0000f1e1  HardFault_Handler             
+0000f1c5  I2C0_IRQHandler               
+0000f1c5  I2C1_IRQHandler               
+0000d9b8  IMULTIPLIERS                  
+202002e0  Index                         
+0000f0fd  Key_In                        
+0000f05d  Key_Init                      
+0000e011  Lab5Grader                    
+202002e4  Last16ADCindex                
+20200240  Last16ADCresults              
+20200294  LastIn                        
+0000e9e9  LaunchPad_Init                
+0000f085  LogicAnalyzer                 
+20200298  M                             
+2020029c  Mask                          
+0000f1c5  NMI_Handler                   
+202002e8  NotesMode                     
+0000d7ec  NotesPeriod                   
+0000d56a  NotesProblem                  
+0000f2dd  OutCRLF                       
+0000f1c5  PendSV_Handler                
+202002a0  PeriodicTask2                 
+0000d9d8  RMULTIPLIERS                  
+0000f1c5  RTC_IRQHandler                
+0000f169  Random32                      
+0000efe1  ReadInput                     
+0000f30f  Reset_Handler                 
+0000f271  RxFifo_Init                   
+0000ec4d  RxFifo_Put                    
+0000f1fd  RxFifo_Size                   
+202002a4  RxGetI                        
+202002a8  RxPutI                        
+0000f1c5  SPI0_IRQHandler               
+0000f1c5  SPI1_IRQHandler               
+0000f1c5  SVC_Handler                   
+202002ac  SampleFlag                    
+0000f215  Scope                         
+0000d9f8  SineWave                      
+0000ec99  Sound_Init                    
+0000f189  Sound_Start                   
+0000f2f9  Sound_Stop                    
+202002b0  State                         
+0000ef3d  SysTick_Handler               
+202002b4  TExaSadc                      
+0000f1c5  TIMA0_IRQHandler              
+0000f1c5  TIMA1_IRQHandler              
+0000f1c5  TIMG0_IRQHandler              
+0000f1c5  TIMG12_IRQHandler             
+0000f1c5  TIMG6_IRQHandler              
+0000f121  TIMG7_IRQHandler              
+0000f1c5  TIMG8_IRQHandler              
+0000f299  TI_memcpy_small               
+0000eae1  TimerG12_Init                 
+0000e8b1  TimerG7_IntArm                
+0000ece5  TxFifo_Get                    
+0000f285  TxFifo_Init                   
+0000ed31  TxFifo_Put                    
+0000f22d  TxFifo_Size                   
+202002b8  TxGetI                        
+202002bc  TxPutI                        
+0000eb41  UART0_IRQHandler              
+0000f1c5  UART1_IRQHandler              
+0000f1c5  UART2_IRQHandler              
+0000f1c5  UART3_IRQHandler              
+0000e781  UART_Init                     
+0000ee0d  UART_OutChar                  
+0000f0d5  UART_OutString                
+0000ef75  UART_OutUDec                  
+202002f4  WaveLen                       
+202002f8  WavePtr                       
+20208000  __STACK_END                   
+00000200  __STACK_SIZE                  
+00000200  __SYSMEM_SIZE                 
+00000000  __TI_ATRegion0_region_sz      
+00000000  __TI_ATRegion0_src_addr       
+00000000  __TI_ATRegion0_trg_addr       
+00000000  __TI_ATRegion1_region_sz      
+00000000  __TI_ATRegion1_src_addr       
+00000000  __TI_ATRegion1_trg_addr       
+00000000  __TI_ATRegion2_region_sz      
+00000000  __TI_ATRegion2_src_addr       
+00000000  __TI_ATRegion2_trg_addr       
+0000f35c  __TI_CINIT_Base               
+0000f36c  __TI_CINIT_Limit              
+0000f36c  __TI_CINIT_Warm               
+0000f348  __TI_Handler_Table_Base       
+0000f354  __TI_Handler_Table_Limit      
+0000eec9  __TI_auto_init_nobinit_nopinit
+0000ea65  __TI_decompress_lzss          
+0000f2ab  __TI_decompress_none          
+ffffffff  __TI_pprof_out_hndl           
+ffffffff  __TI_prof_data_size           
+ffffffff  __TI_prof_data_start          
+00000000  __TI_static_base__            
+0000f245  __TI_zero_init_nomemset       
+0000ebf5  __aeabi_idiv                  
+0000ec4b  __aeabi_idiv0                 
+0000ebf5  __aeabi_idivmod               
+0000e959  __aeabi_memcpy                
+0000e959  __aeabi_memcpy4               
+0000e959  __aeabi_memcpy8               
+0000ee4d  __aeabi_uidiv                 
+0000ee4d  __aeabi_uidivmod              
+ffffffff  __binit__                     
+UNDEFED   __mpu_init                    
+20207e00  __stack                       
+20200000  __start___llvm_prf_bits       
+20200000  __start___llvm_prf_cnts       
+20200000  __stop___llvm_prf_bits        
+20200000  __stop___llvm_prf_cnts        
+0000f0ad  _c_int00_noargs               
+20200000  _sys_memory                   
+UNDEFED   _system_post_cinit            
+0000f313  _system_pre_init              
+0000f305  abort                         
+ffffffff  binit                         
+0000658d  iceball                       
+00000000  interruptVectors              
+202002c0  key                           
+0000ddc5  lab5grader                    
+202002c4  last                          
+0000e399  main                          
+0000efab  setUpper                      
+0000c57a  shoot                         
+0000a7e8  slimeball                     
+0000da98  soundLengths                  
+202002c8  soundsArray                   
+202002fc  soundsIndex                   
+0000e961  strcmp                        
+000000c0  ufo_lowpitch                  
+0000f145  useSine                       
+0000edc9  useSound                      
+
+
+GLOBAL SYMBOLS: SORTED BY Symbol Address 
+
+address   name                          
+-------   ----                          
+00000000  __TI_ATRegion0_region_sz      
+00000000  __TI_ATRegion0_src_addr       
+00000000  __TI_ATRegion0_trg_addr       
+00000000  __TI_ATRegion1_region_sz      
+00000000  __TI_ATRegion1_src_addr       
+00000000  __TI_ATRegion1_trg_addr       
+00000000  __TI_ATRegion2_region_sz      
+00000000  __TI_ATRegion2_src_addr       
+00000000  __TI_ATRegion2_trg_addr       
+00000000  __TI_static_base__            
+00000000  interruptVectors              
+000000c0  ufo_lowpitch                  
+00000200  __STACK_SIZE                  
+00000200  __SYSMEM_SIZE                 
+0000658d  iceball                       
+0000a7e8  slimeball                     
+0000c57a  shoot                         
+0000d56a  NotesProblem                  
+0000d7ec  NotesPeriod                   
+0000d9b8  IMULTIPLIERS                  
+0000d9d8  RMULTIPLIERS                  
+0000d9f8  SineWave                      
+0000da98  soundLengths                  
+0000daf2  EID1                          
+0000db01  FFT                           
+0000ddc5  lab5grader                    
+0000e011  Lab5Grader                    
+0000e1e5  Clock_Init80MHz               
+0000e399  main                          
+0000e4f5  CheckInitialization           
+0000e64d  ADC_Init                      
+0000e781  UART_Init                     
+0000e8b1  TimerG7_IntArm                
+0000e959  __aeabi_memcpy                
+0000e959  __aeabi_memcpy4               
+0000e959  __aeabi_memcpy8               
+0000e961  strcmp                        
+0000e9e9  LaunchPad_Init                
+0000ea65  __TI_decompress_lzss          
+0000eae1  TimerG12_Init                 
+0000eb41  UART0_IRQHandler              
+0000ebf5  __aeabi_idiv                  
+0000ebf5  __aeabi_idivmod               
+0000ec4b  __aeabi_idiv0                 
+0000ec4d  RxFifo_Put                    
+0000ec99  Sound_Init                    
+0000ece5  TxFifo_Get                    
+0000ed31  TxFifo_Put                    
+0000edc9  useSound                      
+0000ee0d  UART_OutChar                  
+0000ee4d  __aeabi_uidiv                 
+0000ee4d  __aeabi_uidivmod              
+0000ee8d  DAC5_Init                     
+0000eec9  __TI_auto_init_nobinit_nopinit
+0000ef05  ActivatePortA_B               
+0000ef3d  SysTick_Handler               
+0000ef75  UART_OutUDec                  
+0000efab  setUpper                      
+0000efe1  ReadInput                     
+0000f00d  ADC_Start                     
+0000f035  Grader_Init                   
+0000f05d  Key_Init                      
+0000f085  LogicAnalyzer                 
+0000f0ad  _c_int00_noargs               
+0000f0d5  UART_OutString                
+0000f0fd  Key_In                        
+0000f121  TIMG7_IRQHandler              
+0000f145  useSine                       
+0000f169  Random32                      
+0000f189  Sound_Start                   
+0000f1a9  DAC5_Out                      
+0000f1c5  ADC0_IRQHandler               
+0000f1c5  ADC1_IRQHandler               
+0000f1c5  AES_IRQHandler                
+0000f1c5  CANFD0_IRQHandler             
+0000f1c5  DAC0_IRQHandler               
+0000f1c5  DMA_IRQHandler                
+0000f1c5  Default_Handler               
+0000f1c5  GROUP0_IRQHandler             
+0000f1c5  GROUP1_IRQHandler             
+0000f1c5  I2C0_IRQHandler               
+0000f1c5  I2C1_IRQHandler               
+0000f1c5  NMI_Handler                   
+0000f1c5  PendSV_Handler                
+0000f1c5  RTC_IRQHandler                
+0000f1c5  SPI0_IRQHandler               
+0000f1c5  SPI1_IRQHandler               
+0000f1c5  SVC_Handler                   
+0000f1c5  TIMA0_IRQHandler              
+0000f1c5  TIMA1_IRQHandler              
+0000f1c5  TIMG0_IRQHandler              
+0000f1c5  TIMG12_IRQHandler             
+0000f1c5  TIMG6_IRQHandler              
+0000f1c5  TIMG8_IRQHandler              
+0000f1c5  UART1_IRQHandler              
+0000f1c5  UART2_IRQHandler              
+0000f1c5  UART3_IRQHandler              
+0000f1e1  HardFault_Handler             
+0000f1fd  RxFifo_Size                   
+0000f215  Scope                         
+0000f22d  TxFifo_Size                   
+0000f245  __TI_zero_init_nomemset       
+0000f25d  Debug_Init                    
+0000f271  RxFifo_Init                   
+0000f285  TxFifo_Init                   
+0000f299  TI_memcpy_small               
+0000f2ab  __TI_decompress_none          
+0000f2bd  Clock_Delay                   
+0000f2cd  Delay                         
+0000f2dd  OutCRLF                       
+0000f2ed  Clock_Freq                    
+0000f2f9  Sound_Stop                    
+0000f305  abort                         
+0000f30a  C$$EXIT                       
+0000f30b  HOSTexit                      
+0000f30f  Reset_Handler                 
+0000f313  _system_pre_init              
+0000f348  __TI_Handler_Table_Base       
+0000f354  __TI_Handler_Table_Limit      
+0000f35c  __TI_CINIT_Base               
+0000f36c  __TI_CINIT_Limit              
+0000f36c  __TI_CINIT_Warm               
+20200000  __start___llvm_prf_bits       
+20200000  __start___llvm_prf_cnts       
+20200000  __stop___llvm_prf_bits        
+20200000  __stop___llvm_prf_cnts        
+20200000  _sys_memory                   
+20200240  Last16ADCresults              
+20200290  DebugCnt                      
+20200294  LastIn                        
+20200298  M                             
+2020029c  Mask                          
+202002a0  PeriodicTask2                 
+202002a4  RxGetI                        
+202002a8  RxPutI                        
+202002ac  SampleFlag                    
+202002b0  State                         
+202002b4  TExaSadc                      
+202002b8  TxGetI                        
+202002bc  TxPutI                        
+202002c0  key                           
+202002c4  last                          
+202002c8  soundsArray                   
+202002d8  BusFreq                       
+202002e0  Index                         
+202002e4  Last16ADCindex                
+202002e8  NotesMode                     
+202002f4  WaveLen                       
+202002f8  WavePtr                       
+202002fc  soundsIndex                   
+20207e00  __stack                       
+20208000  __STACK_END                   
+ffffffff  __TI_pprof_out_hndl           
+ffffffff  __TI_prof_data_size           
+ffffffff  __TI_prof_data_start          
+ffffffff  __binit__                     
+ffffffff  binit                         
+UNDEFED   __mpu_init                    
+UNDEFED   _system_post_cinit            
+
+[159 symbols]

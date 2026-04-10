@@ -1,0 +1,79 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+SHELL = cmd.exe
+
+# Add inputs and outputs from these tool invocations to the build variables 
+CMD_SRCS += \
+../mspm0g3507.cmd 
+
+S_SRCS += \
+../Func.s \
+../XXXXXExam2ASMPartXXXXX.s 
+
+C_SRCS += \
+../Clock.c \
+../LaunchPad.c \
+../UART.c \
+../UARTbusywait.c \
+../XXXXXExam2CPartXXXXX.c \
+../main.c 
+
+S_DEPS += \
+./Func.d \
+./XXXXXExam2ASMPartXXXXX.d 
+
+C_DEPS += \
+./Clock.d \
+./LaunchPad.d \
+./UART.d \
+./UARTbusywait.d \
+./XXXXXExam2CPartXXXXX.d \
+./main.d 
+
+OBJS += \
+./Clock.o \
+./Func.o \
+./LaunchPad.o \
+./UART.o \
+./UARTbusywait.o \
+./XXXXXExam2ASMPartXXXXX.o \
+./XXXXXExam2CPartXXXXX.o \
+./main.o 
+
+OBJS__QUOTED += \
+"Clock.o" \
+"Func.o" \
+"LaunchPad.o" \
+"UART.o" \
+"UARTbusywait.o" \
+"XXXXXExam2ASMPartXXXXX.o" \
+"XXXXXExam2CPartXXXXX.o" \
+"main.o" 
+
+C_DEPS__QUOTED += \
+"Clock.d" \
+"LaunchPad.d" \
+"UART.d" \
+"UARTbusywait.d" \
+"XXXXXExam2CPartXXXXX.d" \
+"main.d" 
+
+S_DEPS__QUOTED += \
+"Func.d" \
+"XXXXXExam2ASMPartXXXXX.d" 
+
+C_SRCS__QUOTED += \
+"../Clock.c" \
+"../LaunchPad.c" \
+"../UART.c" \
+"../UARTbusywait.c" \
+"../XXXXXExam2CPartXXXXX.c" \
+"../main.c" 
+
+S_SRCS__QUOTED += \
+"../Func.s" \
+"../XXXXXExam2ASMPartXXXXX.s" 
+
+
