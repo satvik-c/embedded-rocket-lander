@@ -8,6 +8,9 @@
 #ifndef LED_H_
 #define LED_H_
 
+#define RED_LED   (1<<26)  // PA26
+#define GREEN_LED (1<<27)  // PA27
+
 // initialize your LEDs
 void LED_Init(void);
 

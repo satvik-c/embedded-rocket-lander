@@ -8,6 +8,9 @@
 #ifndef SWITCH_H_
 #define SWITCH_H_
 
+#define THRUSTER_SW (0x01)  // PA24
+#define RESET_SW    (0x02)  // PA25
+
 // initialize your switches
 void Switch_Init(void);
 

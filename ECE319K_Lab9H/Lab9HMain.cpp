@@ -18,6 +18,7 @@
 #include "LED.h"
 #include "Switch.h"
 #include "Sound.h"
+#include "Language.h"
 #include "images/images.h"
 extern "C" void __disable_irq(void);
 extern "C" void __enable_irq(void);
@@ -42,6 +43,37 @@ uint32_t Random(uint32_t n){
 
 SlidePot Sensor(1500,0); // copy calibration from Lab 7
 
+const int8_t ThrPerpX[32] = {  2,   2,   2,   2,   1,   1,   1,   0,   0,   0,  -1,  -1,  -1,  -2,  -2,  -2,  -2,  -2,  -2,  -2,  -1,  -1,  -1,   0,   0,   0,   1,   1,   1,   2,   2,   2};
+const int8_t ThrPerpY[32] = {  0,   0,  -1,  -1,  -1,  -2,  -2,  -2,  -2,  -2,  -2,  -2,  -1,  -1,  -1,   0,   0,   0,   1,   1,   1,   2,   2,   2,   2,   2,   2,   2,   1,   1,   1,   0};
+const int8_t ThrExhX[32]  = {  0,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   0,   0,   0,   0,   0,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,   0,   0};
+const int8_t ThrExhY[32]  = {  1,   1,   1,   1,   1,   1,   0,   0,   0,   0,   0,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,   0,   0,   0,   0,   0,   1,   1,   1,   1,   1};
+const int8_t ThrBaseX[32] = {  0,   1,   3,   4,   5,   6,   6,   7,   7,   7,   6,   6,   5,   4,   3,   1,   0,  -1,  -3,  -4,  -5,  -6,  -6,  -7,  -7,  -7,  -6,  -6,  -5,  -4,  -3,  -1};
+const int8_t ThrBaseY[32] = {  7,   7,   6,   6,   5,   4,   3,   1,   0,  -1,  -3,  -4,  -5,  -6,  -6,  -7,  -7,  -7,  -6,  -6,  -5,  -4,  -3,  -1,   0,   1,   3,   4,   5,   6,   6,   7};
+
+const int8_t FlameAnchorX[32] = {  -7,   -4,    0,    2,    5,    7,    8,    9,    9,    9,    7,    6,    3,    1,   -2,   -6,   -9,  -12,  -16,  -18,  -21,  -23,  -24,  -25,  -25,  -25,  -23,  -22,  -19,  -17,  -14,  -10};
+const int8_t FlameAnchorY[32] = {  25,   25,   23,   22,   19,   17,   14,   10,    7,    4,    0,   -2,   -5,   -7,   -8,   -9,   -9,   -9,   -7,   -6,   -3,   -1,    2,    6,    9,   12,   16,   18,   21,   23,   24,   25};
+
+void DrawFlame(int16_t rocketX, int16_t rocketY, uint32_t rocket_angle){
+  int16_t cx = rocketX + 9;
+  int16_t cy = rocketY - 9;
+  ST7735_DrawBitmap(cx + FlameAnchorX[rocket_angle],
+                    cy + FlameAnchorY[rocket_angle],
+                    FlameFrames[rocket_angle], 16, 16);
+}
+
+void DrawThruster(int16_t rocketX, int16_t rocketY, uint32_t rocket_angle){
+  int16_t cx = rocketX + 9;
+  int16_t cy = rocketY - 9;
+  int16_t tx = cx + ThrBaseX[rocket_angle];
+  int16_t ty = cy + ThrBaseY[rocket_angle];
+  ST7735_Line(tx - ThrPerpX[rocket_angle],
+              ty - ThrPerpY[rocket_angle],
+              tx + ThrPerpX[rocket_angle],
+              ty + ThrPerpY[rocket_angle],
+              0xFFFF);
+}
+
+
 // games  engine runs at 30Hz
 void TIMG12_IRQHandler(void){uint32_t pos,msg;
   if((TIMG12->CPU_INT.IIDX) == 1){ // this will acknowledge
@@ -61,108 +93,98 @@ uint8_t TExaS_LaunchPadLogicPB27PB26(void){
   return (0x80|((GPIOB->DOUT31_0>>26)&0x03));
 }
 
-typedef enum {English, Spanish, Portuguese, French} Language_t;
-Language_t myLanguage=English;
-typedef enum {HELLO, GOODBYE, LANGUAGE} phrase_t;
-const char Hello_English[] ="Hello";
-const char Hello_Spanish[] ="\xADHola!";
-const char Hello_Portuguese[] = "Ol\xA0";
-const char Hello_French[] ="All\x83";
-const char Goodbye_English[]="Goodbye";
-const char Goodbye_Spanish[]="Adi\xA2s";
-const char Goodbye_Portuguese[] = "Tchau";
-const char Goodbye_French[] = "Au revoir";
-const char Language_English[]="English";
-const char Language_Spanish[]="Espa\xA4ol";
-const char Language_Portuguese[]="Portugu\x88s";
-const char Language_French[]="Fran\x87" "ais";
-const char *Phrases[3][4]={
-  {Hello_English,Hello_Spanish,Hello_Portuguese,Hello_French},
-  {Goodbye_English,Goodbye_Spanish,Goodbye_Portuguese,Goodbye_French},
-  {Language_English,Language_Spanish,Language_Portuguese,Language_French}
-};
 // use main1 to observe special characters
-int main(void){ // main1
-    char l;
+int main1(void){ // main1
   __disable_irq();
   PLL_Init(); // set bus speed
   LaunchPad_Init();
   ST7735_InitPrintf(INITR_REDTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
   ST7735_FillScreen(0x0000);            // set screen to black
-  for(int myPhrase=0; myPhrase<= 2; myPhrase++){
-    for(int myL=0; myL<= 3; myL++){
-         ST7735_OutString((char *)Phrases[LANGUAGE][myL]);
-      ST7735_OutChar(' ');
-         ST7735_OutString((char *)Phrases[myPhrase][myL]);
-      ST7735_OutChar(13);
-    }
+  myLanguage = English;
+  for(int i = 0; i < PHRASE_COUNT; i++){
+    ST7735_OutString((char*)GetPhrase((phrase_t)i));
+    ST7735_OutChar(13); // newline
   }
   Clock_Delay1ms(3000);
-  ST7735_FillScreen(0x0000);       // set screen to black
-  l = 128;
-  while(1){
-    Clock_Delay1ms(2000);
-    for(int j=0; j < 3; j++){
-      for(int i=0;i<16;i++){
-        ST7735_SetCursor(7*j+0,i);
-        ST7735_OutUDec(l);
-        ST7735_OutChar(' ');
-        ST7735_OutChar(' ');
-        ST7735_SetCursor(7*j+4,i);
-        ST7735_OutChar(l);
-        l++;
-      }
-    }
+  ST7735_FillScreen(0x0000);
+  myLanguage = Spanish;
+  for(int i = 0; i < PHRASE_COUNT; i++){
+    ST7735_OutString((char*)GetPhrase((phrase_t)i));
+    ST7735_OutChar(13);
   }
 }
 
 // use main2 to observe graphics
-int main2(void){ // main2
+int main(void){
   __disable_irq();
-  PLL_Init(); // set bus speed
+  PLL_Init();
   LaunchPad_Init();
-  ST7735_InitPrintf(INITR_REDTAB); // INITR_REDTAB for AdaFruit, INITR_BLACKTAB for HiLetGo
+  ST7735_InitPrintf(INITR_REDTAB);
   ST7735_FillScreen(ST7735_BLACK);
-  ST7735_DrawBitmap(22, 159, PlayerShip0, 18,8); // player ship bottom
-  ST7735_DrawBitmap(53, 151, Bunker0, 18,5);
-  ST7735_DrawBitmap(42, 159, PlayerShip1, 18,8); // player ship bottom
-  ST7735_DrawBitmap(62, 159, PlayerShip2, 18,8); // player ship bottom
-  ST7735_DrawBitmap(82, 159, PlayerShip3, 18,8); // player ship bottom
-  ST7735_DrawBitmap(0, 9, SmallEnemy10pointA, 16,10);
-  ST7735_DrawBitmap(20,9, SmallEnemy10pointB, 16,10);
-  ST7735_DrawBitmap(40, 9, SmallEnemy20pointA, 16,10);
-  ST7735_DrawBitmap(60, 9, SmallEnemy20pointB, 16,10);
-  ST7735_DrawBitmap(80, 9, SmallEnemy30pointA, 16,10);
 
-  for(uint32_t t=500;t>0;t=t-5){
-    SmallFont_OutVertical(t,104,6); // top left
-    Clock_Delay1ms(50);              // delay 50 msec
-  }
-  ST7735_FillScreen(0x0000);   // set screen to black
-  ST7735_SetCursor(1, 1);
-  ST7735_OutString((char *)"GAME OVER");
-  ST7735_SetCursor(1, 2);
-  ST7735_OutString((char *)"Nice try,");
-  ST7735_SetCursor(1, 3);
-  ST7735_OutString((char *)"Earthling!");
-  ST7735_SetCursor(2, 4);
-  ST7735_OutUDec(1234);
+  const int16_t rocketX = 55;
+  const int16_t rocketY = 90;
+
   while(1){
+    for(int i = 0; i < 32; i++){
+      ST7735_FillRect(46, 63, 36, 36, ST7735_BLACK);
+      ST7735_DrawBitmap(rocketX, rocketY, Rocket[i], 18, 18);
+      DrawThruster(rocketX, rocketY, i);
+      DrawFlame(rocketX, rocketY, i);
+      Clock_Delay1ms(150);
+    }
   }
 }
 
 // use main3 to test switches and LEDs
-int main3(void){ // main3
+int main3(void){
   __disable_irq();
-  PLL_Init(); // set bus speed
+  PLL_Init();
   LaunchPad_Init();
-  Switch_Init(); // initialize switches
-  LED_Init(); // initialize LED
-  while(1){
-    // write code to test switches and LEDs
+  ST7735_InitPrintf(INITR_REDTAB);
+  ST7735_FillScreen(ST7735_BLACK);
+  Switch_Init();
+  LED_Init();
 
+  ST7735_SetCursor(0, 0);
+  ST7735_OutString((char*)"Switch Test");
+  ST7735_SetCursor(0, 1);
+  ST7735_OutString((char*)"PA24=Thrust");
+  ST7735_SetCursor(0, 2);
+  ST7735_OutString((char*)"PA25=Reset");
+
+  uint32_t last = 0;
+  while(1){
+    uint32_t sw = Switch_In();
+
+    if(sw & THRUSTER_SW){
+      LED_On(RED_LED);
+    } else {
+      LED_Off(RED_LED);
+    }
+
+    if(sw & RESET_SW){
+      LED_On(GREEN_LED);
+    } else {
+      LED_Off(GREEN_LED);
+    }
+
+    if(sw != last){
+      ST7735_SetCursor(0, 4);
+      ST7735_OutString((char*)"Thrust: ");
+      ST7735_OutUDec(sw & THRUSTER_SW ? 1 : 0);
+      ST7735_OutChar(' ');
+      ST7735_SetCursor(0, 5);
+      ST7735_OutString((char*)"Reset:  ");
+      ST7735_OutUDec(sw & RESET_SW ? 1 : 0);
+      ST7735_OutChar(' ');
+      last = sw;
+    }
+
+    Clock_Delay1ms(10);
   }
 }
+
 // use main4 to test sound outputs
 int main4(void){ uint32_t last=0,now;
   __disable_irq();
