@@ -53,9 +53,37 @@ const int8_t ThrBaseY[32] = {  7,   7,   6,   6,   5,   4,   3,   1,   0,  -1,  
 const int8_t FlameAnchorX[32] = {  -7,   -4,    0,    2,    5,    7,    8,    9,    9,    9,    7,    6,    3,    1,   -2,   -6,   -9,  -12,  -16,  -18,  -21,  -23,  -24,  -25,  -25,  -25,  -23,  -22,  -19,  -17,  -14,  -10};
 const int8_t FlameAnchorY[32] = {  25,   25,   23,   22,   19,   17,   14,   10,    7,    4,    0,   -2,   -5,   -7,   -8,   -9,   -9,   -9,   -7,   -6,   -3,   -1,    2,    6,    9,   12,   16,   18,   21,   23,   24,   25};
 
-bool Landed;
-bool Crashed;
-bool GameOver;
+enum GameState { PLAYING, LANDED, CRASHED };
+volatile GameState state;
+
+  // Position is fixed-point Q8: pixels << 8 (so we can do sub-pixel motion)
+volatile int32_t  rocketX_q8, rocketY_q8;
+volatile int32_t  velX_q8,    velY_q8;
+volatile uint32_t angle;          // 0..31 — rocket rotation frame
+volatile uint32_t fuel;           // ticks of thrust remaining
+volatile uint32_t score;
+volatile uint8_t  thrustActive;   // DrawScreen reads this to decide flame on/off
+volatile uint32_t prevSw;         // for edge-triggered reset
+
+volatile uint32_t Semaphore = 0;  
+
+
+#define Q8(x)        ((int32_t)(x) << 8)
+#define UNQ8(x)      ((x) >> 8)
+
+#define START_X      Q8(55)
+#define START_Y      Q8(10)
+#define PAD_Y        140          // ground row, in pixels
+#define PAD_X_MIN    48           // pad spans X = 48..80
+#define PAD_X_MAX    80
+#define ROCKET_W     18
+
+#define GRAVITY      8            // Q8 velocity added per tick
+#define THRUST_K     2            // multiplier on the angle-LUT thrust vector
+#define FUEL_MAX     150          // 5 seconds of thrust at 30 Hz
+#define SAFE_VY_Q8   Q8(2)        // max landing Y-speed
+#define SAFE_VX_Q8   Q8(1)   
+
 
 void DrawFlame(int16_t rocketX, int16_t rocketY, uint32_t rocket_angle){
   int16_t cx = rocketX + 9;
@@ -77,21 +105,95 @@ void DrawThruster(int16_t rocketX, int16_t rocketY, uint32_t rocket_angle){
               0xFFFF);
 }
 
+void ResetLevel(void){
+  state = PLAYING;
+  rocketX_q8 = START_X;
+  rocketY_q8 = START_Y;
+  velX_q8 = 0;
+  velY_q8 = 0;
+  angle = 0;
+  fuel = FUEL_MAX;
+  thrustActive = 0;
+  // keep score the same
+}
 
+void GameTick(uint32_t sw){
+  uint32_t thrustNow = sw & THRUSTER_SW;
+  uint32_t resetNow = sw & RESET_SW; 
+  // Check for reset button, edge-triggered
+  if (resetNow && !(prevSw & RESET_SW)){
+    ResetLevel();
+    prevSw = sw;
+    return;
+  }
+
+  prevSw = sw;
+
+  // If game over freeze physics, wait for reset
+  if (state != PLAYING){
+    thrustActive = 0;
+    return;
+  }
+
+  // Get Pot Angle
+  uint32_t pot = Sensor.In();
+  angle = (pot * 32) >> 12;
+  if (angle > 31) angle = 31;
+
+  // Add gravity
+  velY_q8 += GRAVITY;
+
+  // Add thrust
+  thrustActive = (thrustNow && fuel) ? 1 : 0;
+
+  if (thrustActive){
+    fuel--;
+    velX_q8 += (-ThrExhX[angle] * THRUST_K) << 3; // Q8 math
+    velY_q8 += (-ThrExhY[angle] * THRUST_K) << 3;
+
+    // ADD SOUND HERE
+  }
+  
+  rocketX_q8 += velX_q8;
+  rocketY_q8 += velY_q8;  
+
+  if(rocketX_q8 < 0) {rocketX_q8 = 0; velX_q8 = 0;}
+  if(rocketX_q8 > Q8(128 - ROCKET_W)) { rocketX_q8 = Q8(128 - ROCKET_W); velX_q8 = 0; }
+  
+  int32_t pixelY = UNQ8(rocketY_q8);
+  if (pixelY + ROCKET_W >= PAD_Y){
+    int32_t pixelX = UNQ8(rocketX_q8);
+    int32_t center = pixelX + ROCKET_W/2;
+
+    bool onPad = (center >= PAD_X_MIN) && (center <= PAD_X_MAX);
+    bool safeVY = velY_q8 <= SAFE_VY_Q8;
+    bool safeVX = (velX_q8 >= -SAFE_VX_Q8) && (velX_q8 <= SAFE_VX_Q8);
+    bool upRight = (angle >= 30) || (angle <= 2);
+
+    if (onPad && safeVY && safeVX && upRight){
+      state = LANDED;
+      score += (1000 + 10 * fuel); // reward player for saving fuel
+      // sound landing here
+    } else {
+      state = CRASHED;
+      // sound explosion here
+    }
+
+    velX_q8 = 0;
+    velY_q8 = 0;
+    thrustActive = 0;
+
+  }
+}
 // games  engine runs at 30Hz
 void TIMG12_IRQHandler(void){uint32_t pos,msg;
   if((TIMG12->CPU_INT.IIDX) == 1){ // this will acknowledge
     GPIOB->DOUTTGL31_0 = GREEN; // toggle PB27 (minimally intrusive debugging)
-    GPIOB->DOUTTGL31_0 = GREEN; // toggle PB27 (minimally intrusive debugging)
-// game engine goes here
-
     
-    // 1) sample slide pot
-    Sensor.save(Sensor.In());
     // 2) read input switches
     uint32_t sw = Switch_In();
     // 3) move sprites
-    // GameTick(sw);
+    GameTick(sw);
     // 4) start sounds
     // 5) set semaphore
     Semaphore = 1;
@@ -235,17 +337,19 @@ int main5(void){ // final main
   Sound_Init();  // initialize sound
   TExaS_Init(0,0,&TExaS_LaunchPadLogicPB27PB26); // PB27 and PB26
     // initialize interrupts on TimerG12 at 30 Hz
-  TimerG12_Init(3333333, 2);
-  volatile uint32_t Semaphore = 0;
-  // initialize all data structures
+  score = 0;
+  prevSw = 0;
+  ResetLevel();
+  TimerG12_IntArm(2666667, 2);
   __enable_irq();
+  // initialize all data structures
 
   while(1){
     // wait for semaphore
-    while (semphore == 0) {};
-    semaphore = 0;
+    while (Semaphore == 0) {};
+    Semaphore = 0;
     // DrawScreen();
-    if (state == Landed || state == Crashed){
+    if (state == LANDED || state == CRASHED){
       showEndScreen();
     }
   }
