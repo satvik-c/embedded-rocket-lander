@@ -53,6 +53,10 @@ const int8_t ThrBaseY[32] = {  7,   7,   6,   6,   5,   4,   3,   1,   0,  -1,  
 const int8_t FlameAnchorX[32] = {  -7,   -4,    0,    2,    5,    7,    8,    9,    9,    9,    7,    6,    3,    1,   -2,   -6,   -9,  -12,  -16,  -18,  -21,  -23,  -24,  -25,  -25,  -25,  -23,  -22,  -19,  -17,  -14,  -10};
 const int8_t FlameAnchorY[32] = {  25,   25,   23,   22,   19,   17,   14,   10,    7,    4,    0,   -2,   -5,   -7,   -8,   -9,   -9,   -9,   -7,   -6,   -3,   -1,    2,    6,    9,   12,   16,   18,   21,   23,   24,   25};
 
+bool Landed;
+bool Crashed;
+bool GameOver;
+
 void DrawFlame(int16_t rocketX, int16_t rocketY, uint32_t rocket_angle){
   int16_t cx = rocketX + 9;
   int16_t cy = rocketY - 9;
@@ -80,11 +84,17 @@ void TIMG12_IRQHandler(void){uint32_t pos,msg;
     GPIOB->DOUTTGL31_0 = GREEN; // toggle PB27 (minimally intrusive debugging)
     GPIOB->DOUTTGL31_0 = GREEN; // toggle PB27 (minimally intrusive debugging)
 // game engine goes here
+
+    
     // 1) sample slide pot
+    Sensor.save(Sensor.In());
     // 2) read input switches
+    uint32_t sw = Switch_In();
     // 3) move sprites
+    // GameTick(sw);
     // 4) start sounds
     // 5) set semaphore
+    Semaphore = 1;
     // NO LCD OUTPUT IN INTERRUPT SERVICE ROUTINES
     GPIOB->DOUTTGL31_0 = GREEN; // toggle PB27 (minimally intrusive debugging)
   }
@@ -225,14 +235,22 @@ int main5(void){ // final main
   Sound_Init();  // initialize sound
   TExaS_Init(0,0,&TExaS_LaunchPadLogicPB27PB26); // PB27 and PB26
     // initialize interrupts on TimerG12 at 30 Hz
-  
+  TimerG12_Init(3333333, 2);
+  volatile uint32_t Semaphore = 0;
   // initialize all data structures
   __enable_irq();
 
   while(1){
     // wait for semaphore
+    while (semphore == 0) {};
+    semaphore = 0;
+    // DrawScreen();
+    if (state == Landed || state == Crashed){
+      showEndScreen();
+    }
+  }
        // clear semaphore
        // update ST7735R
     // check for end game or level switch
-  }
+  
 }
