@@ -64,17 +64,19 @@ void Sound_Start(const uint8_t *pt, uint32_t count){
 }
 
 void Sound_Thrust(void){
+  Sound_Start(thrust, 4096);
 // write this
 
 }
 void Sound_Explosion(void){
 // write this
-  Sound_Start( explosion, 4096);
+  Sound_Start(explosion, 4096);
 }
 
 void Sound_GameOver(void){
+  Sound_Start(gameover, 4096);
 
 }
 void Sound_Win(void){
-
+  Sound_Start(win, 4096);
 }

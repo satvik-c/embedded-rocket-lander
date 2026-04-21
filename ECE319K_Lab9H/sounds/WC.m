@@ -17,6 +17,7 @@
 ##       For 4-bit precision
 ##       This will produce a file named boom.txt, which contains a C declaration
 ##       for the array of samples. You can cut-and-paste it in your code
+
 function WC(filename,precision)
   # load the file
   [SplsOrig, fs] = audioread(strcat(filename,'.wav')); 
