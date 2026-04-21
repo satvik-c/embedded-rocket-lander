@@ -11,6 +11,9 @@
 #include "../inc/Timer.h"
 
 
+const uint8_t * volatile Sound_Ptr;       // next sample to play
+volatile uint32_t Sound_Count;  
+
 
 void SysTick_IntArm(uint32_t period, uint32_t priority){
   // write this
@@ -20,13 +23,27 @@ void SysTick_IntArm(uint32_t period, uint32_t priority){
 // Initialize the 5 bit DAC
 void Sound_Init(void){
 // write this
- 
+  Sound_Ptr = 0;
+  Sound_Count = 0;
+  DAC5_Init();
+  SysTick->LOAD = 7271; // 80MHz/11kHz = 7272, but LOAD is zero-indexed
+  SysTick->CTRL = 0x00000007; // bit 0: enable, bit 1: interrupt enable, bit 2: use core clock
+  SysTick->VAL = 0; // any write to CVR clears it and the COUNTFLAG in CSR
+
+  // priority 0 (highest) — audio shouldn't be preempted
+  SCB->SHP[1] = (SCB->SHP[1] & ~0xC0000000);
+  
 }
 extern "C" void SysTick_Handler(void);
 void SysTick_Handler(void){ // called at 11 kHz
   // output one value to DAC if a sound is active
     // output one value to DAC if a sound is active
-
+  if(Sound_Count > 0){
+    Sound_Count--;
+    DAC5_Out(*Sound_Ptr & 0x1F);
+    Sound_Ptr++;
+  }
+  // When sound count == 0: idle
 }
 
 //******* Sound_Start ************
@@ -41,34 +58,23 @@ void SysTick_Handler(void){ // called at 11 kHz
 // special cases: as you wish to implement
 void Sound_Start(const uint8_t *pt, uint32_t count){
 // write this
+  Sound_Ptr = pt;
+  Sound_Count = count;
   
 }
 
-void Sound_Shoot(void){
-// write this
-  Sound_Start( shoot, 4080);
-}
-void Sound_Killed(void){
+void Sound_Thrust(void){
 // write this
 
 }
 void Sound_Explosion(void){
 // write this
-
+  Sound_Start( explosion, 4096);
 }
 
-void Sound_Fastinvader1(void){
+void Sound_GameOver(void){
 
 }
-void Sound_Fastinvader2(void){
-
-}
-void Sound_Fastinvader3(void){
-
-}
-void Sound_Fastinvader4(void){
-
-}
-void Sound_Highpitch(void){
+void Sound_Win(void){
 
 }
