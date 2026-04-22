@@ -2,11 +2,6 @@
 
 Language_t myLanguage = English;
 
-// ── Translation table ─────────────────────────────────────────────────────────
-// Column 0 = English, Column 1 = Spanish.
-// Row order must match phrase_t enum order in Language.h exactly.
-// Extended ASCII escape sequences used for accented characters
-// (see Figure 9.4 in the lab description for the full chart).
 static const char * const Phrases[PHRASE_COUNT][2] = {
 
   // ── Original HUD ──────────────────────────────────────────────────────────
@@ -20,13 +15,13 @@ static const char * const Phrases[PHRASE_COUNT][2] = {
   // ── Language select ───────────────────────────────────────────────────────
   /* PHRASE_SELECT_LANG  */ { "Select Language", "Seleccionar Idioma"   },
   /* PHRASE_ENGLISH      */ { "English",         "Ingl\x82s"            },
-  /* PHRASE_SPANISH      */ { "Spanish",         "Espa\x96ol"           },
+  /* PHRASE_SPANISH      */ { "Spanish",         "Espa\xA4ol"           },
 
   // ── Difficulty select ─────────────────────────────────────────────────────
   /* PHRASE_DIFFICULTY   */ { "Difficulty",      "Dificultad"           },
-  /* PHRASE_EASY         */ { "Easy",            "F\x83" "cil"          },
+  /* PHRASE_EASY         */ { "Easy",            "F\xA0" "cil"          },
   /* PHRASE_MEDIUM       */ { "Medium",          "Medio"                },
-  /* PHRASE_HARD         */ { "Hard",            "Dif\x96" "cil"        },
+  /* PHRASE_HARD         */ { "Hard",            "Dif\xA1" "cil"        },
 
   // ── Rounds select ─────────────────────────────────────────────────────────
   /* PHRASE_ROUNDS       */ { "Rounds",          "Rondas"               },

@@ -1,8 +1,8 @@
 // Lab9HMain.cpp
 // Runs on MSPM0G3507
 // Lab 9 ECE319H
-// Your name
-// Last Modified: January 12, 2026
+// Satvik Chawla, Shane Nguyen
+// Last Modified: April 21, 2026
 
 #include <stdio.h>
 #include <stdint.h>
@@ -13,12 +13,12 @@
 #include "../inc/TExaS.h"
 #include "../inc/Timer.h"
 #include "../inc/SlidePot.h"
-#include "../inc/DAC5.h"
+#include "../inc/DAC.h"
 #include "SmallFont.h"
 #include "LED.h"
 #include "Switch.h"
 #include "Sound.h"
-#include "Language.h"   // owns all phrases, myLanguage, GetPhrase()
+#include "Language.h"
 #include "images/images.h"
 extern "C" void __disable_irq(void);
 extern "C" void __enable_irq(void);
@@ -32,13 +32,8 @@ uint32_t Random(uint32_t n){ return (Random32()>>16)%n; }
 
 SlidePot Sensor(1760, 198);
 
-// ── Shorthand: Ph(id) → GetPhrase(id) ────────────────────────────────────────
-// Keeps call sites readable without duplicating any string data.
 static inline const char* Ph(phrase_t id){ return GetPhrase(id); }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Lookup tables
-// ═══════════════════════════════════════════════════════════════════════════════
 const int8_t ThrPerpX[32] = {  2,   2,   2,   2,   1,   1,   1,   0,   0,   0,  -1,  -1,  -1,  -2,  -2,  -2,  -2,  -2,  -2,  -2,  -1,  -1,  -1,   0,   0,   0,   1,   1,   1,   2,   2,   2};
 const int8_t ThrPerpY[32] = {  0,   0,  -1,  -1,  -1,  -2,  -2,  -2,  -2,  -2,  -2,  -2,  -1,  -1,  -1,   0,   0,   0,   1,   1,   1,   2,   2,   2,   2,   2,   2,   2,   1,   1,   1,   0};
 const int8_t ThrExhX[32]  = {  0,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   0,   0,   0,   0,   0,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,   0,   0};
@@ -48,9 +43,6 @@ const int8_t ThrBaseY[32] = {  7,   7,   6,   6,   5,   4,   3,   1,   0,  -1,  
 const int8_t FlameAnchorX[32] = {  -7,   -4,    0,    2,    5,    7,    8,    9,    9,    9,    7,    6,    3,    1,   -2,   -6,   -9,  -12,  -16,  -18,  -21,  -23,  -24,  -25,  -25,  -25,  -23,  -22,  -19,  -17,  -14,  -10};
 const int8_t FlameAnchorY[32] = {  25,   25,   23,   22,   19,   17,   14,   10,    7,    4,    0,   -2,   -5,   -7,   -8,   -9,   -9,   -9,   -7,   -6,   -3,   -1,    2,    6,    9,   12,   16,   18,   21,   23,   24,   25};
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  App state machine
-// ═══════════════════════════════════════════════════════════════════════════════
 enum AppState {
   APP_LANG_SELECT,
   APP_DIFFICULTY_SELECT,
@@ -63,9 +55,6 @@ enum AppState {
 };
 volatile AppState appState = APP_LANG_SELECT;
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Session data
-// ═══════════════════════════════════════════════════════════════════════════════
 typedef struct {
   uint8_t  difficulty;
   uint8_t  totalRounds;
@@ -75,12 +64,8 @@ typedef struct {
   uint8_t  roundsLanded;
   uint8_t  roundsCrashed;
 } GameSession;
-// Note: language is owned by myLanguage in Language.h — no duplicate here.
 GameSession session;
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Physics / round state
-// ═══════════════════════════════════════════════════════════════════════════════
 enum RoundState { ROUND_PLAYING, ROUND_LANDED, ROUND_CRASHED };
 volatile RoundState roundState;
 
@@ -103,7 +88,6 @@ volatile uint32_t SlidePotResult = 0;
 #define PAD_Y     140
 #define ROCKET_W  18
 
-// Set by ApplyDifficulty()
 int32_t  PAD_X_MIN    = 48;
 int32_t  PAD_X_MAX    = 80;
 int32_t  GRAVITY_VAL  = 5;
@@ -120,9 +104,6 @@ uint32_t FUEL_MAX_VAL = 270;
 #define ANG_DAMP_NUM  60
 #define ANG_DAMP_DEN  64
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Difficulty
-// ═══════════════════════════════════════════════════════════════════════════════
 void ApplyDifficulty(void){
   switch(session.difficulty){
     case 0: PAD_X_MIN=40; PAD_X_MAX=88; GRAVITY_VAL=4; FUEL_MAX_VAL=360; break;
@@ -131,14 +112,11 @@ void ApplyDifficulty(void){
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Input helpers
-// ═══════════════════════════════════════════════════════════════════════════════
 static inline int32_t GimbalOffset(uint32_t pot){
   uint32_t bw    = 4096 / GIMBAL_STAGES;
   uint32_t stage = pot / bw;
   if(stage >= (uint32_t)GIMBAL_STAGES) stage = GIMBAL_STAGES - 1;
-  return -((int32_t)stage - GIMBAL_RANGE);  // negated = pot direction flip
+  return -((int32_t)stage - GIMBAL_RANGE);
 }
 
 static inline uint8_t PotToOption(uint32_t pot, uint8_t nOpts){
@@ -147,16 +125,11 @@ static inline uint8_t PotToOption(uint32_t pot, uint8_t nOpts){
   return (uint8_t)idx;
 }
 
-// menuPrevSw is separate from prevSw so pause/resume edges don't bleed into
-// menu edge detection and vice versa.
 static uint32_t menuPrevSw = 0;
 static inline bool RisingEdge(uint32_t sw, uint32_t bit){
   return (sw & bit) && !(menuPrevSw & bit);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Draw helpers
-// ═══════════════════════════════════════════════════════════════════════════════
 void DrawThruster(int16_t rx, int16_t ry, uint32_t hull, uint32_t thr){
   int16_t cx=rx+9, cy=ry-9;
   int16_t tx=cx+ThrBaseX[hull], ty=cy+ThrBaseY[hull];
@@ -179,16 +152,16 @@ void DrawFlameClipped(int16_t rx, int16_t ry, uint32_t hull, uint32_t thr, int16
   int16_t extX  = (int16_t)FlameAnchorX[thr] - (int16_t)ThrBaseX[thr];
   int16_t extY  = (int16_t)FlameAnchorY[thr] - (int16_t)ThrBaseY[thr];
   int16_t drawX = cx + (int16_t)ThrBaseX[hull] + extX;
-  int16_t drawY = cy + (int16_t)ThrBaseY[hull] + extY;  // bottom edge of sprite
+  int16_t drawY = cy + (int16_t)ThrBaseY[hull] + extY;
 
   int16_t h = 16;
   const uint16_t* img = FlameFrames[thr];
 
   if(drawY >= clipY){
-    int16_t clip = drawY - clipY + 1;  // number of rows sitting on or below clipY
-    if(clip >= h) return;              // entire sprite is below — draw nothing
-    img   += clip * 16;               // skip those bottom rows in the bitmap data
-    drawY -= clip;                    // new bottom is now just above clipY
+    int16_t clip = drawY - clipY + 1;  
+    if(clip >= h) return;              
+    img   += clip * 16;
+    drawY -= clip;                    
     h     -= clip;
   }
 
@@ -217,23 +190,28 @@ void DrawScreen(void){
   if(thrustActive){
     DrawThruster(px, py, hull, angle);
     DrawFlameClipped(px, py, hull, angle, (int16_t)PAD_Y);
+    LED_On(RED_LED);
+  } else if(fuel < FUEL_MAX_VAL / 4){
+    static uint8_t blinkCount = 0;
+    blinkCount++;
+    if(blinkCount & 0x04) LED_On(RED_LED); 
+    else                  LED_Off(RED_LED);  
+  } else {
+    LED_Off(RED_LED);
   }
 
-  // Fuel gauge
   uint32_t fp = (fuel * 40) / FUEL_MAX_VAL;
   ST7735_FillRect(1, 10, 4, 40, ST7735_BLACK);
   if(fp > 0){
     ST7735_FillRect(1,(int16_t)(10+(40-fp)),4,(int16_t)fp, fp>13?ST7735_GREEN:ST7735_RED);
   }
 
-  // Round indicator top-right
   ST7735_SetCursor(11, 0);
   ST7735_OutUDec(session.currentRound); ST7735_OutChar('/'); ST7735_OutUDec(session.totalRounds);
 
   sPrevX=px; sPrevY=py;
 }
 
-// ── Generic highlighted-list menu ─────────────────────────────────────────────
 void DrawMenuScreen(phrase_t titleID, const phrase_t opts[], uint8_t nOpts,
                     uint8_t sel, phrase_t hintID){
   ST7735_FillScreen(ST7735_BLACK);
@@ -246,21 +224,33 @@ void DrawMenuScreen(phrase_t titleID, const phrase_t opts[], uint8_t nOpts,
   ST7735_SetCursor(0, 14); ST7735_OutString((char*)Ph(hintID));
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  ResetRound
-// ═══════════════════════════════════════════════════════════════════════════════
 void ResetRound(void){
-  roundState    = ROUND_PLAYING;
-  rocketX_q8   = START_X; rocketY_q8   = START_Y;
-  velX_q8      = 0;       velY_q8      = 0;
-  hullAngle_q8 = 0;       angularVel_q8 = 0;
+  roundState = ROUND_PLAYING;
+
+  uint8_t maxTilt;
+  switch(session.difficulty){
+    case 0: maxTilt = 1; break;
+    case 1: maxTilt = 2; break;
+    case 2: maxTilt = 4; break;
+    default: maxTilt = 2;
+  }
+
+  int32_t startX, tilt;
+  do {
+    startX = (int32_t)(20 + Random(90));
+    tilt   = (int32_t)(Random(2*maxTilt+1)) - maxTilt;  
+  } while(tilt == 0 && startX >= PAD_X_MIN && startX <= PAD_X_MAX);
+
+  rocketX_q8   = Q8(startX);
+  rocketY_q8   = START_Y;
+  velX_q8      = 0; velY_q8 = 0;
+  hullAngle_q8 = Q8((tilt + 32) % 32);
+  angularVel_q8 = 0;
+
   angle = 0; fuel = FUEL_MAX_VAL; thrustActive = 0;
   sPrevX = -1; sPrevY = -1;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  GameTick — called from ISR only during APP_PLAYING
-// ═══════════════════════════════════════════════════════════════════════════════
 void GameTick(uint32_t sw){
   if(roundState != ROUND_PLAYING){ thrustActive = 0; return; }
 
@@ -276,7 +266,9 @@ void GameTick(uint32_t sw){
     velX_q8 -= (int32_t)ThrExhX[angle] * THRUST_FORCE;
     velY_q8 -= (int32_t)ThrExhY[angle] * THRUST_FORCE;
     angularVel_q8 += gimbal * TORQUE_GAIN;
-    // TODO: Sound_ThrusterOn();
+    if(Sound_Count == 0) Sound_Thrust(); 
+    } else {
+      Sound_Count = 0;  
   }
 
   angularVel_q8 = (angularVel_q8 * ANG_DAMP_NUM) / ANG_DAMP_DEN;
@@ -291,7 +283,6 @@ void GameTick(uint32_t sw){
   rocketX_q8 += velX_q8;
   rocketY_q8 += velY_q8;
 
-  // Horizontal wrap — velocity unchanged, stale erase suppressed on wrap frame
   if(rocketX_q8 < 0){
     rocketX_q8 += Q8(128 - ROCKET_W);
   }
@@ -309,25 +300,27 @@ void GameTick(uint32_t sw){
 
     if(onPad && safeVY && safeVX && upRight){
       roundState = ROUND_LANDED;
-      uint32_t sp = (uint32_t)(velY_q8 > 0 ? velY_q8 : 0);
-      session.roundScore  = 1000 > sp*10 ? 1000 - sp*10 : 100;
-      session.totalScore += session.roundScore;
+      uint32_t sp          = (uint32_t)UNQ8(velY_q8 > 0 ? velY_q8 : 0);
+      uint32_t speedPenalty = sp * 10;
+      uint32_t fuelBonus    = (fuel * 500) / FUEL_MAX_VAL;
+      uint32_t base         = 500;
+      session.roundScore    = (base + fuelBonus > speedPenalty) ? (base + fuelBonus - speedPenalty) : 50;
+      session.totalScore   += session.roundScore;
       session.roundsLanded++;
-      // TODO: Sound_Landing();
+      Sound_Count = 0;
+      Sound_Win();
     } else {
       roundState = ROUND_CRASHED;
       session.roundScore = 0;
       session.roundsCrashed++;
-      // TODO: Sound_Explosion();
+      Sound_Count = 0;  
+      Sound_Fah();
     }
     velX_q8=0; velY_q8=0; angularVel_q8=0; thrustActive=0;
     appState = APP_ROUND_RESULT;
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  ISR — 30 Hz
-// ═══════════════════════════════════════════════════════════════════════════════
 void TIMG12_IRQHandler(void){
   if((TIMG12->CPU_INT.IIDX) == 1){
     GPIOB->DOUTTGL31_0 = GREEN;
@@ -335,7 +328,6 @@ void TIMG12_IRQHandler(void){
     uint32_t sw = Switch_In();
 
     if(appState == APP_PLAYING){
-      // Rising edge on RESET → pause; never reaches GameTick
       if((sw & RESET_SW) && !(prevSw & RESET_SW)){
         thrustActive = 0;
         menuPrevSw   = sw;
@@ -355,11 +347,6 @@ uint8_t TExaS_LaunchPadLogicPB27PB26(void){
   return (0x80|((GPIOB->DOUT31_0>>26)&0x03));
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Screen handlers
-// ═══════════════════════════════════════════════════════════════════════════════
-
-// ── Language select ───────────────────────────────────────────────────────────
 static bool    langDrawn = false;
 static uint8_t langSel   = 0;
 void RunLangSelect(void){
@@ -372,7 +359,7 @@ void RunLangSelect(void){
     langDrawn = true;
   }
   if(RisingEdge(sw, THRUSTER_SW)){
-    myLanguage = (langSel == 0) ? English : Spanish;  // set the global
+    myLanguage = (langSel == 0) ? English : Spanish;
     langDrawn  = false;
     menuPrevSw = sw;
     appState   = APP_DIFFICULTY_SELECT;
@@ -380,7 +367,6 @@ void RunLangSelect(void){
   menuPrevSw = sw;
 }
 
-// ── Difficulty select ─────────────────────────────────────────────────────────
 static bool    diffDrawn = false;
 static uint8_t diffSel   = 1;
 void RunDifficultySelect(void){
@@ -397,7 +383,6 @@ void RunDifficultySelect(void){
   menuPrevSw = sw;
 }
 
-// ── Rounds select ─────────────────────────────────────────────────────────────
 static bool    roundsDrawn = false;
 static uint8_t roundsSel   = 1;
 void RunRoundsSelect(void){
@@ -422,7 +407,6 @@ void RunRoundsSelect(void){
   menuPrevSw = sw;
 }
 
-// ── Countdown ─────────────────────────────────────────────────────────────────
 void RunCountdown(void){
   ApplyDifficulty();
   ResetRound();
@@ -443,9 +427,8 @@ void RunCountdown(void){
   appState   = APP_PLAYING;
 }
 
-// ── Pause menu ────────────────────────────────────────────────────────────────
 static bool    pauseDrawn = false;
-static uint8_t pauseSel   = 0;   // default = Resume
+static uint8_t pauseSel   = 0; 
 void RunPaused(void){
   uint32_t sw     = Switch_In();
   uint8_t  newSel = PotToOption(SlidePotResult, 2);
@@ -459,24 +442,20 @@ void RunPaused(void){
   bool rstEdge = RisingEdge(sw, RESET_SW);
 
   if(rstEdge || (thrEdge && pauseSel == 0)){
-    // Resume — restore game screen
     pauseDrawn = false; menuPrevSw = sw;
     ST7735_FillScreen(ST7735_BLACK);
     sPrevX = -1; sPrevY = -1;
     prevSw   = sw;
     appState = APP_PLAYING;
   } else if(thrEdge && pauseSel == 1){
-    // Restart round
     pauseDrawn = false; menuPrevSw = sw;
     appState = APP_COUNTDOWN;
   }
   menuPrevSw = sw;
 }
 
-// ── Round result ──────────────────────────────────────────────────────────────
 static bool resultDrawn = false;
 void RunRoundResult(void){
-  uint32_t sw = Switch_In();
   if(!resultDrawn){
     ST7735_FillScreen(ST7735_BLACK);
     ST7735_SetCursor(0, 0);
@@ -493,7 +472,10 @@ void RunRoundResult(void){
     ST7735_SetCursor(0, 14);
     ST7735_OutString((char*)Ph(PHRASE_NEXT_ROUND));
     resultDrawn = true;
+    Clock_Delay1ms(600);
+    menuPrevSw = Switch_In();
   }
+  uint32_t sw = Switch_In();
   if(RisingEdge(sw, THRUSTER_SW)){
     resultDrawn = false; menuPrevSw = sw; session.currentRound++;
     appState = (session.currentRound > session.totalRounds) ? APP_GAME_OVER : APP_COUNTDOWN;
@@ -501,7 +483,6 @@ void RunRoundResult(void){
   menuPrevSw = sw;
 }
 
-// ── Game over ─────────────────────────────────────────────────────────────────
 static bool gameOverDrawn = false;
 void RunGameOver(void){
   uint32_t sw = Switch_In();
@@ -521,76 +502,6 @@ void RunGameOver(void){
   menuPrevSw = sw;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Test mains
-// ═══════════════════════════════════════════════════════════════════════════════
-int main1(void){
-  __disable_irq(); PLL_Init(); LaunchPad_Init();
-  ST7735_InitPrintf(INITR_REDTAB); ST7735_FillScreen(0x0000);
-  myLanguage = English;
-  for(int i=0; i<PHRASE_COUNT; i++){ ST7735_OutString((char*)GetPhrase((phrase_t)i)); ST7735_OutChar(13); }
-  Clock_Delay1ms(3000); ST7735_FillScreen(0x0000);
-  myLanguage = Spanish;
-  for(int i=0; i<PHRASE_COUNT; i++){ ST7735_OutString((char*)GetPhrase((phrase_t)i)); ST7735_OutChar(13); }
-  while(1){}
-}
-
-int main2(void){
-  __disable_irq(); PLL_Init(); LaunchPad_Init();
-  ST7735_InitPrintf(INITR_REDTAB); ST7735_FillScreen(ST7735_BLACK);
-  const int16_t rx=55, ry=90;
-  while(1){
-    for(int hull=0; hull<32; hull++){
-      for(int off=-GIMBAL_RANGE; off<=GIMBAL_RANGE; off++){
-        uint32_t thr=(uint32_t)((hull+off+32)%32);
-        ST7735_FillRect(20,55,60,60,ST7735_BLACK);
-        ST7735_DrawBitmap(rx,ry,Rocket[hull],18,18);
-        DrawThruster(rx,ry,hull,thr); DrawFlame(rx,ry,hull,thr);
-        Clock_Delay1ms(60);
-      }
-    }
-  }
-}
-
-int main3(void){
-  __disable_irq(); PLL_Init(); LaunchPad_Init();
-  ST7735_InitPrintf(INITR_REDTAB); ST7735_FillScreen(ST7735_BLACK);
-  Switch_Init(); LED_Init();
-  ST7735_SetCursor(0,0); ST7735_OutString((char*)"Switch Test");
-  ST7735_SetCursor(0,1); ST7735_OutString((char*)"PA24=Thrust");
-  ST7735_SetCursor(0,2); ST7735_OutString((char*)"PA25=Reset");
-  uint32_t last=0;
-  while(1){
-    uint32_t sw=Switch_In();
-    if(sw&THRUSTER_SW) LED_On(RED_LED);   else LED_Off(RED_LED);
-    if(sw&RESET_SW)    LED_On(GREEN_LED); else LED_Off(GREEN_LED);
-    if(sw!=last){
-      ST7735_SetCursor(0,4); ST7735_OutString((char*)"Thrust: "); ST7735_OutUDec(sw&THRUSTER_SW?1:0);
-      ST7735_SetCursor(0,5); ST7735_OutString((char*)"Reset:  "); ST7735_OutUDec(sw&RESET_SW?1:0);
-      last=sw;
-    }
-    Clock_Delay1ms(10);
-  }
-}
-
-int main4(void){
-  uint32_t last=0, now;
-  __disable_irq(); PLL_Init(); LaunchPad_Init();
-  Switch_Init(); LED_Init(); Sound_Init(); TExaS_Init(ADC0,6,0);
-  __enable_irq();
-  while(1){
-    now=Switch_In();
-    if((last==0)&&(now==1)) Sound_Shoot();
-    if((last==0)&&(now==2)) Sound_Killed();
-    if((last==0)&&(now==4)) Sound_Explosion();
-    if((last==0)&&(now==8)) Sound_Fastinvader1();
-    last=now;
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  Production main
-// ═══════════════════════════════════════════════════════════════════════════════
 int main(void){
   __disable_irq();
   PLL_Init(); LaunchPad_Init();
@@ -599,7 +510,7 @@ int main(void){
   Sensor.Init(); Switch_Init(); LED_Init(); Sound_Init();
   TExaS_Init(0, 0, &TExaS_LaunchPadLogicPB27PB26);
 
-  myLanguage            = English;  // Language.h global
+  myLanguage            = English;
   session.difficulty    = 1;
   session.totalRounds   = 5;
   session.currentRound  = 1;
@@ -610,7 +521,7 @@ int main(void){
   prevSw     = 0;
   appState   = APP_LANG_SELECT;
 
-  TimerG12_IntArm(2666667, 2);  // 80 MHz / 2666667 ≈ 30 Hz
+  TimerG12_IntArm(2666667, 2);
   __enable_irq();
 
   while(1){

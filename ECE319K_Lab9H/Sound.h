@@ -7,6 +7,8 @@
 #define SOUND_H
 #include <stdint.h>
 
+extern volatile uint32_t Sound_Count;
+
 // initialize a 11kHz SysTick, however no sound should be started
 // initialize any global variables
 // Initialize the 5 bit DAC
@@ -23,13 +25,12 @@ void Sound_Init(void);
 //        count is the length of the array
 // Output: none
 // special cases: as you wish to implement
-void Sound_Start(const uint8_t *pt, uint32_t count);
+void Sound_Start(const uint16_t *pt, uint32_t count);
 
 // following 8 functions do not output to the DAC
 // they configure pointers/counters and initiate the sound by calling Sound_Start
 void Sound_Thrust(void);
-void Sound_Explosion(void);
-void Sound_GameOver(void);
 void Sound_Win(void);
+void Sound_Fah(void);
 
 #endif

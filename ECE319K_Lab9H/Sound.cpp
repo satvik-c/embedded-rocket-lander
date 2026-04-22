@@ -7,43 +7,32 @@
 #include <ti/devices/msp/msp.h>
 #include "Sound.h"
 #include "sounds/sounds.h"
-#include "../inc/DAC5.h"
+#include "../inc/DAC.h"
 #include "../inc/Timer.h"
 
-
-const uint8_t * volatile Sound_Ptr;       // next sample to play
+const uint16_t * volatile Sound_Ptr;
 volatile uint32_t Sound_Count;  
 
+void SysTick_IntArm(uint32_t period, uint32_t priority){}
 
-void SysTick_IntArm(uint32_t period, uint32_t priority){
-  // write this
-}
-// initialize a 11kHz SysTick, however no sound should be started
-// initialize any global variables
-// Initialize the 5 bit DAC
 void Sound_Init(void){
-// write this
   Sound_Ptr = 0;
   Sound_Count = 0;
-  DAC5_Init();
-  SysTick->LOAD = 7271; // 80MHz/11kHz = 7272, but LOAD is zero-indexed
-  SysTick->CTRL = 0x00000007; // bit 0: enable, bit 1: interrupt enable, bit 2: use core clock
-  SysTick->VAL = 0; // any write to CVR clears it and the COUNTFLAG in CSR
+  DAC_Init();
+  SysTick->LOAD = 6663; 
+  SysTick->CTRL = 0x00000007; 
+  SysTick->VAL = 0;
 
-  // priority 0 (highest) — audio shouldn't be preempted
   SCB->SHP[1] = (SCB->SHP[1] & ~0xC0000000);
-  
 }
+
 extern "C" void SysTick_Handler(void);
-void SysTick_Handler(void){ // called at 11 kHz
-  // output one value to DAC if a sound is active
-    // output one value to DAC if a sound is active
+void SysTick_Handler(void){
   if(Sound_Count > 0){
     Sound_Count--;
-    DAC5_Out(*Sound_Ptr & 0x1F);
+    DAC_Out(*Sound_Ptr);
     Sound_Ptr++;
   }
-  // When sound count == 0: idle
 }
 
 //******* Sound_Start ************
@@ -56,27 +45,21 @@ void SysTick_Handler(void){ // called at 11 kHz
 //        count is the length of the array
 // Output: none
 // special cases: as you wish to implement
-void Sound_Start(const uint8_t *pt, uint32_t count){
-// write this
+
+void Sound_Start(const uint16_t *pt, uint32_t count){
   Sound_Ptr = pt;
   Sound_Count = count;
-  
 }
 
 void Sound_Thrust(void){
-  Sound_Start(thrust, 4096);
-// write this
+  Sound_Start(thrust, sizeof(thrust)/2);
 
 }
-void Sound_Explosion(void){
-// write this
-  Sound_Start(explosion, 4096);
-}
 
-void Sound_GameOver(void){
-  Sound_Start(gameover, 4096);
-
-}
 void Sound_Win(void){
-  Sound_Start(win, 4096);
+  Sound_Start(win, sizeof(win)/2);
+}
+
+void Sound_Fah(void) {
+  Sound_Start(fah, sizeof(fah)/2);
 }
