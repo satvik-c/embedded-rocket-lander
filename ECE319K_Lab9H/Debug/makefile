@@ -11,9 +11,10 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./Clock.o" \
-"./DAC5.o" \
+"./DAC.o" \
 "./LED.o" \
 "./Lab9HMain.o" \
+"./Language.o" \
 "./LaunchPad.o" \
 "./SPI.o" \
 "./ST7735.o" \
@@ -23,7 +24,6 @@ ORDERED_OBJS += \
 "./Switch.o" \
 "./TExaS.o" \
 "./Timer.o" \
-"./images/pipedreams/PipeSound.o" \
 "./ticlang/startup_mspm0g3507_ticlang.o" \
 "../mspm0g3507.cmd" \
 $(GEN_CMDS__FLAG) \
@@ -39,11 +39,9 @@ RMDIR := RMDIR /S/Q
 -include sources.mk
 -include subdir_vars.mk
 -include images/subdir_vars.mk
--include images/pipedreams/subdir_vars.mk
 -include ticlang/subdir_vars.mk
 -include subdir_rules.mk
 -include images/subdir_rules.mk
--include images/pipedreams/subdir_rules.mk
 -include ticlang/subdir_rules.mk
 -include objects.mk
 
@@ -156,9 +154,9 @@ ECE319K_Lab9H.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "Clock.o" "DAC5.o" "LED.o" "Lab9HMain.o" "LaunchPad.o" "SPI.o" "ST7735.o" "SlidePot.o" "SmallFont.o" "Sound.o" "Switch.o" "TExaS.o" "Timer.o" "images\pipedreams\PipeSound.o" "ticlang\startup_mspm0g3507_ticlang.o" 
-	-$(RM) "images\pipedreams\PipeSound.d" "ticlang\startup_mspm0g3507_ticlang.d" 
-	-$(RM) "Clock.d" "DAC5.d" "LED.d" "Lab9HMain.d" "LaunchPad.d" "SPI.d" "ST7735.d" "SlidePot.d" "SmallFont.d" "Sound.d" "Switch.d" "TExaS.d" "Timer.d" 
+	-$(RM) "Clock.o" "DAC.o" "LED.o" "Lab9HMain.o" "Language.o" "LaunchPad.o" "SPI.o" "ST7735.o" "SlidePot.o" "SmallFont.o" "Sound.o" "Switch.o" "TExaS.o" "Timer.o" "ticlang\startup_mspm0g3507_ticlang.o" 
+	-$(RM) "ticlang\startup_mspm0g3507_ticlang.d" 
+	-$(RM) "Clock.d" "DAC.d" "LED.d" "Lab9HMain.d" "Language.d" "LaunchPad.d" "SPI.d" "ST7735.d" "SlidePot.d" "SmallFont.d" "Sound.d" "Switch.d" "TExaS.d" "Timer.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

@@ -31,9 +31,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/inc/Clock.cpp</locationURI>
 		</link>
 		<link>
-			<name>DAC5.cpp</name>
+			<name>DAC.cpp</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/inc/DAC5.cpp</locationURI>
+			<location>C:/Users/satvi/Downloads/MSPM0_ValvanoWare/inc/DAC.cpp</location>
 		</link>
 		<link>
 			<name>LaunchPad.cpp</name>
