@@ -3,7 +3,7 @@
  * Red LED:   PA26
  */
 #include <ti/devices/msp/msp.h>
-#include "../inc/LaunchPad.h"
+#include "../drivers/LaunchPad.h"
 
 #define RED_LED   (1<<26)
 

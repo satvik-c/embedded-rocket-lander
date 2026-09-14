@@ -8,7 +8,7 @@
 
 
 #include <ti/devices/msp/msp.h>
-#include "../inc/Clock.h"
+#include "../drivers/Clock.h"
 #define PA5INDEX 9
 #define PA6INDEX 10
 #define PA14INDEX 35

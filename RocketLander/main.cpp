@@ -7,19 +7,19 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <ti/devices/msp/msp.h>
-#include "../inc/ST7735.h"
-#include "../inc/Clock.h"
-#include "../inc/LaunchPad.h"
-#include "../inc/TExaS.h"
-#include "../inc/Timer.h"
-#include "../inc/SlidePot.h"
-#include "../inc/DAC.h"
+#include "../drivers/ST7735.h"
+#include "../drivers/Clock.h"
+#include "../drivers/LaunchPad.h"
+#include "../drivers/TExaS.h"
+#include "../drivers/Timer.h"
+#include "../drivers/SlidePot.h"
+#include "../drivers/DAC.h"
 #include "SmallFont.h"
 #include "LED.h"
 #include "Switch.h"
 #include "Sound.h"
 #include "Language.h"
-#include "images/images.h"
+#include "assets/images/images.h"
 extern "C" void __disable_irq(void);
 extern "C" void __enable_irq(void);
 extern "C" void TIMG12_IRQHandler(void);

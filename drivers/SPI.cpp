@@ -12,8 +12,8 @@ J4.31 LCD RS     PA13
 
 
 #include <ti/devices/msp/msp.h>
-#include "../inc/SPI.h"
-#include "../inc/Clock.h"
+#include "../drivers/SPI.h"
+#include "../drivers/Clock.h"
 #define PB9INDEX 25
 #define PB6INDEX 22
 #define PB8INDEX 24

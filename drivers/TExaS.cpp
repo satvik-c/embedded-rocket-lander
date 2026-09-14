@@ -7,9 +7,9 @@
  */
 
 #include <ti/devices/msp/msp.h>
-#include "../inc/TExaS.h"
-#include "../inc/Timer.h"
-#include "../inc/Clock.h"
+#include "../drivers/TExaS.h"
+#include "../drivers/Timer.h"
+#include "../drivers/Clock.h"
 extern "C" void __disable_irq(void);
 extern "C" void __enable_irq(void);
 extern "C" void TIMG7_IRQHandler(void);

@@ -115,9 +115,9 @@
 // VCC (pin 1)              to +3.3 V
 
 #include <ti/devices/msp/msp.h>
-#include "../inc/ST7735.h"
-#include "../inc/SPI.h"
-#include "../inc/Clock.h"
+#include "../drivers/ST7735.h"
+#include "../drivers/SPI.h"
+#include "../drivers/Clock.h"
 #include "file.h"
 #include <stdio.h>
 #include <stdlib.h>

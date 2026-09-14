@@ -8,7 +8,7 @@
 
 
 #include <ti/devices/msp/msp.h>
-#include "../inc/Clock.h"
+#include "../drivers/Clock.h"
 
 
 // power Domain PD0

@@ -8,8 +8,8 @@
 
 
 #include <ti/devices/msp/msp.h>
-#include "../inc/DAC.h"
-#include "../inc/Clock.h"
+#include "../drivers/DAC.h"
+#include "../drivers/Clock.h"
 // Assumes 40 or 80 MHz MHz bus
 void DAC_Init(void){
     // Reset DAC and VREF

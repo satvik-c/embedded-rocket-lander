@@ -6,8 +6,8 @@
 
 
 #include <ti/devices/msp/msp.h>
-#include "../inc/LaunchPad.h"
-#include "../inc/Clock.h"
+#include "../drivers/LaunchPad.h"
+#include "../drivers/Clock.h"
 //  PA0 is red LED1,   index 0 in IOMUX PINCM table, negative logic
 // PB22 is BLUE LED2,  index 49 in IOMUX PINCM table
 // PB26 is RED LED2,   index 56 in IOMUX PINCM table

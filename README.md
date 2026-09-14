@@ -27,12 +27,16 @@ Developed as the capstone project for UT Austin's ECE 319H (Introduction to Embe
 ## Technical Implementation
 
 ### Interrupt-Driven Concurrency
-The firmware operates completely bare-metal without an RTOS, utilizing hardware interrupts to manage concurrent tasks:
-- **Audio Engine:** Background audio playback is seamlessly handled by the `SysTick_Handler` routine.
-- **Game Loop:** A dedicated hardware timer (`TIMG12`) triggers semaphores at a precise frequency, pacing the physics engine, rendering, and collision detection to guarantee a deterministic frame rate.
+- **Bare-Metal Architecture:** Firmware operates completely bare-metal without an RTOS, utilizing hardware interrupts to manage concurrent tasks.
+- **Background Audio:** The `SysTick_Handler` routine seamlessly manages continuous PCM audio playback independent of game logic.
+- **Deterministic Game Loop:** A dedicated hardware timer (`TIMG12`) triggers semaphores at a precise frequency to pace the physics engine, rendering, and collision detection.
 
 ### Fixed-Point Physics Engine
-Because the Cortex-M0+ lacks a hardware floating-point unit, utilizing standard floating-point math would introduce severe software overhead. Instead, the physics engine relies entirely on **pre-computed lookup tables**. These tables perform all trigonometric math required for thrust vectoring, trajectory projection, and 32-directional sprite rendering with minimal CPU cycles.
+- **No FPU Overhead:** The Cortex-M0+ lacks a hardware floating-point unit; all floating-point math is bypassed to avoid severe software execution overhead.
+- **Pre-Computed Math:** The physics engine relies entirely on pre-computed lookup tables for trigonometric calculations.
+- **Complex Rendering:** Tables efficiently handle thrust vectoring, trajectory projection, and 32-directional sprite rendering using minimal CPU cycles.
 
 ### Memory & Resource Management
-To strictly conserve the microcontroller's limited SRAM, all graphical pixel-art assets and PCM audio waveforms are stored as constant arrays directly in Flash ROM. Hardware peripherals are controlled efficiently through direct memory-mapped register configuration.
+- **SRAM Conservation:** Strictly conserves the microcontroller's limited SRAM by utilizing Flash memory for static data.
+- **Constant Arrays:** All graphical pixel-art assets and PCM audio waveforms are stored as constant arrays directly in Flash ROM.
+- **Direct Register Access:** Hardware peripherals are controlled efficiently through direct memory-mapped register configuration rather than heavy abstraction layers.

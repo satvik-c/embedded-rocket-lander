@@ -4,7 +4,7 @@
  * Reset button:    PA25
  */
 #include <ti/devices/msp/msp.h>
-#include "../inc/LaunchPad.h"
+#include "../drivers/LaunchPad.h"
 
 #define THRUSTER_PIN (1<<24)
 #define RESET_PIN    (1<<25)

@@ -6,9 +6,9 @@
 #include <stdint.h>
 #include <ti/devices/msp/msp.h>
 #include "Sound.h"
-#include "sounds/sounds.h"
-#include "../inc/DAC.h"
-#include "../inc/Timer.h"
+#include "assets/sounds/sounds.h"
+#include "../drivers/DAC.h"
+#include "../drivers/Timer.h"
 
 const uint16_t * volatile Sound_Ptr;
 volatile uint32_t Sound_Count;  
